@@ -65,8 +65,7 @@
                         downloadLink.href = dataURL;
                         downloadLink.download = 'qrcode.png';
                         downloadLink.style.display = 'block';
-                        qrcodeContainer.innerHTML = "";
-                        qrcodeContainer.appendChild(newCanvas);
+                        qrcodeContainer.innerHTML = `<img src="${dataURL}" alt="QRコード">`;
                     }
                 }, 500); // QRコード生成後に少し待つ
             } else {
