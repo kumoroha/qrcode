@@ -43,14 +43,30 @@
             qrcodeContainer.innerHTML = "";
             downloadLink.style.display = 'none';
             if (text) {
-                let qrcode = new QRCode(qrcodeContainer, text);
+                let qrcode = new QRCode(qrcodeContainer, {
+                    text: text,
+                    width: 256,
+                    height: 256,
+                    correctLevel: QRCode.CorrectLevel.H
+                });
                 setTimeout(() => {
                     let canvas = qrcodeContainer.querySelector('canvas');
                     if (canvas) {
-                        let dataURL = canvas.toDataURL('image/png');
+                        let context = canvas.getContext('2d');
+                        let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                        let newCanvas = document.createElement('canvas');
+                        newCanvas.width = canvas.width + 40;
+                        newCanvas.height = canvas.height + 40;
+                        let newContext = newCanvas.getContext('2d');
+                        newContext.fillStyle = '#ffffff';
+                        newContext.fillRect(0, 0, newCanvas.width, newCanvas.height);
+                        newContext.putImageData(imageData, 20, 20);
+                        let dataURL = newCanvas.toDataURL('image/png');
                         downloadLink.href = dataURL;
                         downloadLink.download = 'qrcode.png';
                         downloadLink.style.display = 'block';
+                        qrcodeContainer.innerHTML = "";
+                        qrcodeContainer.appendChild(newCanvas);
                     }
                 }, 500); // QRコード生成後に少し待つ
             } else {
