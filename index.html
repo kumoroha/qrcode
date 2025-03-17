@@ -32,15 +32,27 @@
     <input type="text" id="text" placeholder="ここにテキストを入力">
     <button onclick="generateQRCode()">生成</button>
     <div id="qrcode"></div>
+    <a id="downloadLink" style="display:none;">画像をダウンロード</a>
 
     <script src="qrcode.js"></script>
     <script>
         function generateQRCode() {
             let text = document.getElementById('text').value;
             let qrcodeContainer = document.getElementById('qrcode');
+            let downloadLink = document.getElementById('downloadLink');
             qrcodeContainer.innerHTML = "";
+            downloadLink.style.display = 'none';
             if (text) {
-                new QRCode(qrcodeContainer, text);
+                let qrcode = new QRCode(qrcodeContainer, text);
+                setTimeout(() => {
+                    let canvas = qrcodeContainer.querySelector('canvas');
+                    if (canvas) {
+                        let dataURL = canvas.toDataURL('image/png');
+                        downloadLink.href = dataURL;
+                        downloadLink.download = 'qrcode.png';
+                        downloadLink.style.display = 'block';
+                    }
+                }, 500); // QRコード生成後に少し待つ
             } else {
                 alert("テキストを入力してください。");
             }
